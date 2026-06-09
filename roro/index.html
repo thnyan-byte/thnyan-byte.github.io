@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Time Portal <span class="emoji">💜</span></title>
+  <!-- Google Fonts: Space Grotesk (futuristic headers) & Plus Jakarta Sans (ultra-clean body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Particle Canvas (Always running behind for cosmic ambient feel) -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Audio Player Elements -->
+  <!-- Hidden YouTube Player for background audio -->
+  <div id="youtube-player-container" style="display: none;">
+    <div id="yt-player"></div>
+  </div>
+
+  <!-- Music Controller Overlay (Visible after portal entry) -->
+  <div id="music-control" class="music-control-hidden">
+    <button id="music-toggle-btn" aria-label="Toggle Music">
+      <div class="music-wave">
+        <span></span><span></span><span></span>
+      </div>
+      <i class="fas fa-music"></i>
+      <span class="music-song-title">Heat Waves</span>
+    </button>
+  </div>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main id="app-container">
+
+    <!-- SCREEN 1: INTRO (Tornado Phase) -->
+    <section id="screen-intro" class="screen active">
+      <div class="intro-content">
+        <h2 class="mystical-text">Mysterious temporal frequencies approaching...</h2>
+        <div class="tornado-container">
+          <!-- Tornado rendered using SVG/CSS particles inside app.js -->
+          <div id="tornado-vortex"></div>
+        </div>
+        <p class="intro-subtext">Wait a moment for the vortex to stabilize...</p>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: TIME PORTAL -->
+    <section id="screen-portal" class="screen">
+      <div class="portal-content">
+        <h1 class="portal-title text-glow">The Time Portal is Open <span class="emoji">🌌</span></h1>
+        <p class="portal-instruction">Click on the portal to cross time and enter</p>
+        
+        <!-- The Swirling Portal -->
+        <div class="portal-outer-ring">
+          <div class="portal-core" id="enter-portal-btn">
+            <div class="portal-swirl"></div>
+            <div class="portal-stars"></div>
+          </div>
+        </div>
+        
+        <p class="portal-warning">Use headphones for the best experience <span class="emoji">🎧</span></p>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: THE CHATROOM -->
+    <section id="screen-chat" class="screen">
+      <div class="chat-layout">
+        
+        <!-- Left Column: Character Presentation -->
+        <div class="character-col">
+          <div class="avatar-glow-ring">
+            <div class="avatar-frame">
+              <img id="char-avatar" src="assets/neutral.png" alt="Character Avatar">
+            </div>
+            <!-- Blushing overlay for embarrassing moments -->
+            <div class="blush-overlay"></div>
+          </div>
+          <div class="character-status">
+            <h3 class="char-name">Your Friend <span class="emoji">🙋‍♂️</span></h3>
+            <div class="status-indicator">
+              <span class="status-dot pulsing"></span>
+              <span id="char-mood-text" class="status-text">Connecting...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Chat Console -->
+        <div class="chat-col">
+          <div class="chat-header">
+            <div class="chat-header-info">
+              <i class="fa-solid fa-hourglass-half purple-glow-icon"></i>
+              <span>Time-Crossing Chat</span>
+            </div>
+            <div class="chat-header-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div id="chat-messages" class="chat-messages-container">
+            <!-- Messages dynamic inject -->
+            <div class="typing-indicator" id="chat-typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+          <!-- Bottom placeholder input for chat engagement -->
+          <div class="chat-footer">
+            <input type="text" id="chat-fake-input" placeholder="Type a reply..." disabled>
+            <button class="chat-send-btn" disabled><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 4: BIRTHDAY CAKE -->
+    <section id="screen-cake" class="screen">
+      <div class="cake-content">
+        <h1 class="cake-title text-glow-pink"><span class="emoji">🎂</span> Happy Birthday! <span class="emoji">🎂</span></h1>
+        <p class="cake-instruction">Blow out the candles by clicking them to start the celebration!</p>
+        
+        <!-- Interactive CSS Birthday Cake -->
+        <div class="cake-container">
+          <div class="cake">
+            <div class="plate"></div>
+            <div class="layer layer-bottom"></div>
+            <div class="layer layer-middle"></div>
+            <div class="layer layer-top"></div>
+            <div class="icing"></div>
+            <div class="drip-container">
+              <span class="drip"></span>
+              <span class="drip"></span>
+              <span class="drip"></span>
+            </div>
+            <!-- Interactive Candles -->
+            <div class="candles-wrapper">
+              <div class="candle active-candle" id="candle-1">
+                <div class="flame"></div>
+                <div class="wick"></div>
+              </div>
+              <div class="candle active-candle" id="candle-2">
+                <div class="flame"></div>
+                <div class="wick"></div>
+              </div>
+              <div class="candle active-candle" id="candle-3">
+                <div class="flame"></div>
+                <div class="wick"></div>
+              </div>
+              <div class="candle active-candle" id="candle-4">
+                <div class="flame"></div>
+                <div class="wick"></div>
+              </div>
+              <div class="candle active-candle" id="candle-5">
+                <div class="flame"></div>
+                <div class="wick"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="candles-left-counter">Candles remaining: <span id="candles-counter">5</span></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: MAKE A WISH -->
+    <section id="screen-wish" class="screen">
+      <div class="wish-content">
+        <h2 class="wish-title text-glow">Make a Wish <span class="emoji">✨</span></h2>
+        <p class="wish-subtitle">Write down your wish to let it fly into the temporal space and come true...</p>
+        
+        <div class="wish-form">
+          <textarea id="wish-textarea" placeholder="My birthday wish is..." maxlength="200"></textarea>
+          <button id="send-wish-btn" class="glass-btn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Send wish to the stars
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: GIFT REVEAL -->
+    <section id="screen-gift" class="screen">
+      <div class="gift-content">
+        <h2 class="gift-title text-glow">You received a special gift! <span class="emoji">🎁</span></h2>
+        <p class="gift-subtitle">Click the box to open and see the surprise...</p>
+
+        <!-- 3D CSS Gift Box -->
+        <div class="gift-box-wrapper">
+          <div class="gift-box" id="interactive-gift-box">
+            <div class="gift-box-lid"></div>
+            <div class="gift-box-body">
+              <div class="gift-ribbon-vertical"></div>
+              <div class="gift-ribbon-horizontal"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Gift Card: Reveals Netflix Account -->
+        <div id="gift-card" class="gift-card-hidden">
+          <div class="netflix-card">
+            <div class="netflix-logo">NETFLIX</div>
+            <div class="netflix-card-title">Your Premium Membership Card <span class="emoji">🎬</span></div>
+            
+            <div class="credential-field">
+              <span class="label">Email Address:</span>
+              <div class="value-container">
+                <span id="netflix-email" class="value"></span>
+                <button class="copy-btn" data-copy="netflix-email" aria-label="Copy Email">
+                  <i class="far fa-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="netflix-tip"><i class="fas fa-circle-info"></i> Click the copy button to copy the email directly</div>
+            
+            <button id="next-to-farewell" class="glass-btn small-btn">Continue <span class="emoji">💜</span></button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 7: FAREWELL -->
+    <section id="screen-farewell" class="screen">
+      <div class="farewell-content">
+        <!-- Heartwarming farewell message -->
+        <div class="farewell-card">
+          <div class="farewell-avatar-container">
+            <img src="assets/smiling.png" alt="Happy Friend" class="farewell-avatar">
+          </div>
+          
+          <h1 id="farewell-title" class="text-glow"></h1>
+          
+          <p id="farewell-body" class="farewell-text-paragraph"></p>
+          
+          <div id="farewell-signoff" class="farewell-sign"></div>
+
+          <div class="farewell-actions">
+            <button id="replay-btn" class="glass-btn">
+              <i class="fa-solid fa-rotate-left"></i> Replay Adventure <span class="emoji">🔄</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Canvas Confetti Library & Scripts -->
+  <script src="config.js"></script>
+  <!-- YouTube API Script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js"></script>
+</body>
+</html>
