@@ -229,7 +229,8 @@ function onYouTubeIframeAPIReady() {
       controls: 0,
       disablekb: 1,
       fs: 0,
-      rel: 0
+      rel: 0,
+      origin: window.location.origin // fixes iframe domain restriction on GitHub Pages
     },
     events: {
       onReady: onPlayerReady,
