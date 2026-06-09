@@ -1,0 +1,1328 @@
+/* GLOBAL RESETS & STYLING */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-color: #060212;
+  --bg-gradient: radial-gradient(circle at 50% 50%, rgba(142, 45, 226, 0.15) 0%, rgba(6, 2, 18, 0) 60%), linear-gradient(135deg, #060212 0%, #15092d 100%);
+  --purple-primary: #8e2de2;
+  --purple-secondary: #4a00e0;
+  --purple-glow: rgba(142, 45, 226, 0.6);
+  --purple-light: #cfa9ff;
+  --dark-glass: rgba(15, 8, 32, 0.65);
+  --light-glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --neon-pink: #ff007f;
+  --neon-blue: #00f3ff;
+  --text-primary: #ffffff;
+  --text-secondary: #b0a5cf;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+  background-color: var(--bg-color);
+  background-image: var(--bg-gradient);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Titles and Headers */
+.portal-title, .mystical-text, .cake-title, .wish-title, .gift-title, .netflix-logo, .farewell-title {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+/* Fix emoji rendering issues inside gradient texts */
+.emoji {
+  -webkit-text-fill-color: initial !important;
+  background: none !important;
+  display: inline-block;
+}
+
+/* Background Particle Canvas */
+#particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* MAIN APP CONTAINER */
+#app-container {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+/* SCREEN SYSTEM */
+.screen {
+  position: absolute;
+  width: 90%;
+  max-width: 900px;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95) translateY(10px);
+  transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen.active {
+  position: relative;
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1) translateY(0);
+}
+
+/* MUSIC CONTROL OVERLAY */
+#music-control {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  z-index: 100;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.music-control-hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+#music-toggle-btn {
+  background: var(--dark-glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(15px);
+  padding: 12px 20px;
+  border-radius: 50px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 15px rgba(142, 45, 226, 0.2);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+}
+
+#music-toggle-btn:hover {
+  border-color: var(--purple-primary);
+  box-shadow: 0 8px 32px rgba(142, 45, 226, 0.4), 0 0 20px rgba(142, 45, 226, 0.4);
+  transform: translateY(-2px);
+}
+
+#music-toggle-btn i {
+  color: var(--purple-light);
+  font-size: 1.1rem;
+}
+
+.music-song-title {
+  font-weight: 600;
+}
+
+/* Equalizer music wave */
+.music-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 14px;
+}
+
+.music-wave span {
+  width: 2px;
+  height: 100%;
+  background-color: var(--neon-pink);
+  animation: music-bounce 0.8s infinite ease-in-out alternate;
+  transform-origin: bottom;
+  border-radius: 2px;
+}
+
+.music-wave span:nth-child(1) { animation-duration: 0.7s; }
+.music-wave span:nth-child(2) { animation-duration: 0.9s; animation-delay: 0.15s; }
+.music-wave span:nth-child(3) { animation-duration: 0.6s; animation-delay: 0.3s; }
+
+.music-paused .music-wave span {
+  animation-play-state: paused;
+  height: 3px;
+  background-color: var(--text-secondary);
+}
+
+@keyframes music-bounce {
+  0% { transform: scaleY(0.2); }
+  100% { transform: scaleY(1); }
+}
+
+/* TEXT GLOW EFFECTS */
+.text-glow {
+  text-shadow: 0 0 10px rgba(142, 45, 226, 0.8), 0 0 20px rgba(142, 45, 226, 0.4);
+}
+
+.text-glow-pink {
+  text-shadow: 0 0 10px rgba(255, 0, 127, 0.8), 0 0 20px rgba(255, 0, 127, 0.4);
+}
+
+/* ----------------------------------------- */
+/* SCREEN 1: INTRO (Tornado Phase) */
+/* ----------------------------------------- */
+.intro-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.mystical-text {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--text-primary), var(--purple-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulse-glow 2s infinite alternate;
+}
+
+.tornado-container {
+  width: 250px;
+  height: 250px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#tornado-vortex {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Tornado Rings in CSS */
+.tornado-ring {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 2px solid transparent;
+  border-top-color: var(--purple-primary);
+  border-bottom-color: var(--neon-pink);
+  border-radius: 50%;
+  animation: spin infinite linear;
+  box-shadow: 0 0 15px var(--purple-glow);
+}
+
+.intro-subtext {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  animation: blink 1.5s infinite;
+}
+
+/* ----------------------------------------- */
+/* SCREEN 2: TIME PORTAL */
+/* ----------------------------------------- */
+.portal-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.portal-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.portal-instruction {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+/* Portal Rings & Core */
+.portal-outer-ring {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  padding: 10px;
+  background: linear-gradient(to right, var(--purple-primary), var(--neon-pink), var(--purple-secondary));
+  animation: spin 8s linear infinite, portal-pulse 2s infinite ease-in-out alternate;
+  box-shadow: 0 0 35px var(--purple-glow), inset 0 0 30px rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.portal-outer-ring:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 55px rgba(142, 45, 226, 0.9), 0 0 25px rgba(255, 0, 127, 0.7);
+}
+
+.portal-core {
+  width: 100%;
+  height: 100%;
+  background-color: #03010a;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.portal-swirl {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(142, 45, 226, 0.9) 80deg,
+    var(--neon-pink) 160deg,
+    rgba(74, 0, 224, 0.9) 240deg,
+    transparent 360deg
+  );
+  animation: spin-reverse 4s linear infinite;
+  filter: blur(8px);
+}
+
+.portal-stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px);
+  background-size: 80px 80px;
+  animation: warp-stars 1.5s linear infinite;
+}
+
+.portal-warning {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+@keyframes portal-pulse {
+  0% { box-shadow: 0 0 30px var(--purple-glow); }
+  100% { box-shadow: 0 0 50px rgba(142, 45, 226, 0.8), 0 0 20px rgba(255, 0, 127, 0.4); }
+}
+
+/* ----------------------------------------- */
+/* SCREEN 3: CHATROOM */
+/* ----------------------------------------- */
+.chat-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 30px;
+  width: 100%;
+  min-height: 520px;
+}
+
+/* Character Column */
+.character-col {
+  background: var(--dark-glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.avatar-glow-ring {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  position: relative;
+  padding: 6px;
+  background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+  box-shadow: 0 0 25px var(--purple-glow);
+  animation: float 4s ease-in-out infinite;
+}
+
+.avatar-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #100824;
+  overflow: hidden;
+  position: relative;
+}
+
+.avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+/* Blush overlay for dynamic blush expressions */
+.blush-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 0, 127, 0.45) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.blush-active .blush-overlay {
+  opacity: 1;
+  animation: pulse-blush 1.5s infinite alternate;
+}
+
+.character-status {
+  text-align: center;
+  width: 100%;
+}
+
+.char-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #39ff14; /* bright neon green */
+  box-shadow: 0 0 8px #39ff14;
+}
+
+.status-dot.pulsing {
+  animation: pulse-dot 1.5s infinite alternate;
+}
+
+.status-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Chat Column (Console) */
+.chat-col {
+  background: var(--dark-glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.chat-header {
+  background: rgba(18, 9, 39, 0.85);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 18px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-header-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.purple-glow-icon {
+  color: var(--purple-light);
+  filter: drop-shadow(0 0 5px var(--purple-primary));
+}
+
+.chat-header-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.chat-header-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--glass-border);
+}
+
+.chat-header-dots span:nth-child(1) { background-color: #ff5f56; }
+.chat-header-dots span:nth-child(2) { background-color: #ffbd2e; }
+.chat-header-dots span:nth-child(3) { background-color: #27c93f; }
+
+.chat-messages-container {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 380px;
+  min-height: 300px;
+  scroll-behavior: smooth;
+}
+
+/* Chat Bubble styles with bounce animations */
+.message-bubble {
+  max-width: 80%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 1rem;
+  line-height: 1.6;
+  position: relative;
+  animation: slide-up-fade-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+  white-space: pre-wrap;
+}
+
+/* Boyfriend bubble (Left aligned) */
+.message-boyfriend {
+  align-self: flex-start;
+  background: var(--light-glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 18px;
+}
+
+/* User bubble (Right aligned) */
+.message-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-secondary) 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(142, 45, 226, 0.35);
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 18px;
+}
+
+/* Typing Indicator animation (Left aligned) */
+.typing-indicator {
+  align-self: flex-start;
+  background: var(--light-glass);
+  border: 1px solid var(--glass-border);
+  padding: 12px 18px;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  display: none;
+  gap: 5px;
+  align-items: center;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--purple-light);
+  animation: typing-bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+/* Chat Footer (Interactive Mimic) */
+.chat-footer {
+  border-top: 1px solid var(--glass-border);
+  padding: 15px 25px;
+  display: flex;
+  gap: 15px;
+  background: rgba(18, 9, 39, 0.4);
+}
+
+.chat-footer input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  padding: 12px 20px;
+  border-radius: 50px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.chat-footer input:focus {
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 10px var(--purple-glow);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.chat-send-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(142, 45, 226, 0.3);
+  transition: all 0.3s ease;
+}
+
+.chat-send-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(142, 45, 226, 0.5);
+}
+
+.chat-send-btn:disabled, .chat-footer input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ----------------------------------------- */
+/* SCREEN 4: BIRTHDAY CAKE */
+/* ----------------------------------------- */
+.cake-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cake-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--neon-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cake-instruction {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+}
+
+/* CSS Cake Design */
+.cake-container {
+  width: 300px;
+  height: 350px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 30px;
+}
+
+.cake {
+  position: relative;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plate {
+  width: 280px;
+  height: 15px;
+  background: linear-gradient(to right, #ccc, #fff, #bbb);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: -15px;
+  left: -15px;
+  z-index: 1;
+}
+
+.layer {
+  width: 100%;
+  border-radius: 15px 15px 0 0;
+  position: relative;
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.2), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.layer-bottom {
+  height: 80px;
+  background: #3c166d; /* Deep chocolate purple */
+  width: 240px;
+  z-index: 2;
+}
+
+.layer-middle {
+  height: 70px;
+  background: #5d2b99; /* Vibrant purple layer */
+  width: 200px;
+  z-index: 3;
+}
+
+.layer-top {
+  height: 60px;
+  background: #8e44ad; /* Lilac lavender cake top */
+  width: 160px;
+  z-index: 4;
+}
+
+/* Cream toppings & drips */
+.icing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  background: #fdf5e6; /* Cream color */
+  border-radius: 15px 15px 0 0;
+  z-index: 5;
+}
+
+.layer-top .icing { width: 160px; z-index: 10; top: 0; }
+.layer-middle .icing { width: 200px; z-index: 9; top: 0; }
+.layer-bottom .icing { width: 240px; z-index: 8; top: 0; }
+
+.drip-container {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  z-index: 12;
+}
+
+.drip {
+  width: 10px;
+  height: 15px;
+  background-color: #fdf5e6;
+  border-radius: 0 0 10px 10px;
+}
+
+/* Interactive Candles */
+.candles-wrapper {
+  position: absolute;
+  top: -30px; /* Sitting on top of the cake */
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 20;
+}
+
+.candle {
+  width: 10px;
+  height: 40px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ff007f,
+    #ff007f 5px,
+    #ffffff 5px,
+    #ffffff 10px
+  );
+  border-radius: 3px 3px 0 0;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+#candle-2 { top: -8px; }
+#candle-3 { top: -12px; }
+#candle-4 { top: -8px; }
+
+.wick {
+  width: 2px;
+  height: 8px;
+  background-color: #222;
+  position: absolute;
+  top: -8px;
+  left: 4px;
+}
+
+.flame {
+  width: 14px;
+  height: 25px;
+  background: radial-gradient(circle at bottom, #ffea00 20%, #ff5f00 70%, transparent 100%);
+  border-radius: 50% 50% 20% 20%;
+  position: absolute;
+  top: -32px;
+  left: -2px;
+  box-shadow: 0 0 10px rgba(255, 234, 0, 0.8), 0 0 20px rgba(255, 95, 0, 0.5);
+  transform-origin: center bottom;
+  animation: flicker 1s infinite alternate;
+  pointer-events: none;
+}
+
+/* Extinguished Candle state */
+.candle.extinguished .flame {
+  display: none;
+}
+
+.candle.extinguished {
+  opacity: 0.7;
+  transform: translateY(4px);
+}
+
+.candles-left-counter {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--purple-light);
+}
+
+/* ----------------------------------------- */
+/* SCREEN 5: MAKE A WISH */
+/* ----------------------------------------- */
+.wish-content {
+  text-align: center;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.wish-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.wish-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.wish-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#wish-textarea {
+  width: 100%;
+  height: 150px;
+  background: var(--dark-glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: 18px;
+  padding: 20px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1.1rem;
+  outline: none;
+  resize: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+#wish-textarea:focus {
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 15px var(--purple-glow), inset 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.glass-btn {
+  background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-secondary) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 6px 20px rgba(142, 45, 226, 0.4);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.glass-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(142, 45, 226, 0.6), 0 0 15px var(--neon-pink);
+}
+
+.glass-btn:active {
+  transform: translateY(-1px);
+}
+
+/* ----------------------------------------- */
+/* SCREEN 6: GIFT REVEAL */
+/* ----------------------------------------- */
+.gift-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.gift-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gift-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+}
+
+/* 3D CSS Gift Box with Bouncy floating effects */
+.gift-box-wrapper {
+  perspective: 1000px;
+  width: 200px;
+  height: 200px;
+  margin: 30px 0;
+}
+
+.gift-box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  animation: float-rotation 4s ease-in-out infinite, gift-pulse 2s infinite ease-in-out alternate;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gift-box:hover {
+  transform: scale(1.1) rotateY(15deg);
+}
+
+.gift-box-lid {
+  position: absolute;
+  top: -15px;
+  left: -10px;
+  width: 220px;
+  height: 40px;
+  background-color: #9e2cf2;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 10;
+  transform-style: preserve-3d;
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gift-box-body {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 200px;
+  height: 180px;
+  background-color: #7a11cc;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  z-index: 5;
+}
+
+/* Ribbon and bow */
+.gift-ribbon-vertical {
+  position: absolute;
+  left: 90px;
+  width: 20px;
+  height: 100%;
+  background-color: #ffd700; /* Gold ribbon */
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.gift-ribbon-horizontal {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  height: 20px;
+  background-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Opened gift box animation */
+.gift-box.opened .gift-box-lid {
+  transform: translateY(-90px) rotate(-25deg) scale(0.8);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gift-box.opened {
+  animation: none;
+  transform: scale(0.7) translateY(120px);
+  opacity: 0;
+  transition: all 1s ease;
+  pointer-events: none;
+}
+
+/* Netflix Gift Card Overlay */
+#gift-card {
+  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+  width: 100%;
+  max-width: 420px;
+}
+
+.gift-card-hidden {
+  opacity: 0;
+  transform: scale(0.6) translateY(100px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.netflix-card {
+  background: linear-gradient(135deg, #1f1035 0%, #0d0617 100%);
+  border: 2px solid #e50914; /* Netflix Red signature border */
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 15px 40px rgba(229, 9, 20, 0.35), 0 0 30px rgba(142, 45, 226, 0.2);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.netflix-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(229, 9, 20, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.netflix-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #e50914;
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+  text-shadow: 0 0 10px rgba(229, 9, 20, 0.4);
+}
+
+.netflix-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 25px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 15px;
+}
+
+.credential-field {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.credential-field .label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.value-container {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.value-container:hover {
+  border-color: var(--purple-light);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.value-container .value {
+  flex: 1;
+  padding: 10px 15px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  text-align: left;
+  user-select: all;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.copy-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--purple-light);
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.copy-btn:hover {
+  background: var(--purple-primary);
+  color: #fff;
+}
+
+.netflix-tip {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 25px;
+}
+
+.small-btn {
+  padding: 10px 25px;
+  font-size: 1rem;
+  margin: 0 auto;
+}
+
+/* ----------------------------------------- */
+/* SCREEN 7: FAREWELL */
+/* ----------------------------------------- */
+.farewell-content {
+  width: 100%;
+  max-width: 600px;
+}
+
+.farewell-card {
+  background: var(--dark-glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(25px);
+  border-radius: 28px;
+  padding: 45px 40px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 35px rgba(142, 45, 226, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.farewell-avatar-container {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, var(--purple-primary), var(--neon-pink));
+  box-shadow: 0 0 15px var(--purple-glow);
+  margin-bottom: 10px;
+}
+
+.farewell-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #12092f;
+}
+
+.farewell-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.farewell-text-paragraph {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  margin: 10px 0;
+}
+
+.farewell-sign {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--purple-light);
+  font-style: italic;
+}
+
+.farewell-actions {
+  margin-top: 15px;
+}
+
+/* ----------------------------------------- */
+/* ANIMATIONS DEFINITIONS */
+/* ----------------------------------------- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-rotation {
+  0% { transform: translateY(0px) rotateY(0deg); }
+  50% { transform: translateY(-15px) rotateY(180deg); }
+  100% { transform: translateY(0px) rotateY(360deg); }
+}
+
+@keyframes gift-pulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes pulse-glow {
+  from { filter: drop-shadow(0 0 2px var(--purple-primary)); }
+  to { filter: drop-shadow(0 0 10px var(--purple-primary)) drop-shadow(0 0 15px var(--neon-pink)); }
+}
+
+@keyframes pulse-blush {
+  from { opacity: 0.3; }
+  to { opacity: 0.85; }
+}
+
+@keyframes pulse-dot {
+  from { transform: scale(1); opacity: 0.6; }
+  to { transform: scale(1.3); opacity: 1; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes typing-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Bouncy cubic-bezier bubble presentation */
+@keyframes slide-up-fade-bounce {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes warp-stars {
+  from { transform: scale(1) rotate(0deg); opacity: 0.2; }
+  50% { opacity: 0.8; }
+  to { transform: scale(1.6) rotate(18deg); opacity: 0.2; }
+}
+
+@keyframes flicker {
+  0% { transform: scale(1) rotate(-1deg); }
+  20% { transform: scale(1.1) rotate(1.5deg); }
+  40% { transform: scale(0.85) rotate(-0.5deg); }
+  60% { transform: scale(1.05) rotate(2deg); }
+  80% { transform: scale(0.9) rotate(-1.5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ----------------------------------------- */
+/* RESPONSIVE DESIGN */
+/* ----------------------------------------- */
+@media (max-width: 850px) {
+  .chat-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+  }
+  
+  .character-col {
+    padding: 20px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .avatar-glow-ring {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .character-status {
+    text-align: left;
+  }
+
+  .chat-messages-container {
+    max-height: 280px;
+    min-height: 250px;
+  }
+
+  .portal-title {
+    font-size: 2.2rem;
+  }
+
+  .portal-outer-ring {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  #app-container {
+    padding: 10px;
+  }
+
+  .screen {
+    width: 95%;
+  }
+
+  .farewell-card {
+    padding: 25px 15px;
+  }
+
+  .cake-container {
+    transform: scale(0.85);
+    height: 300px;
+  }
+
+  .netflix-card {
+    padding: 20px 15px;
+  }
+}
